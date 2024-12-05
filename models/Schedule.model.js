@@ -30,6 +30,10 @@ const Schedule = sequelize.define('Schedule', {
         allowNull: false,
         defaultValue: 'available', // Créneau disponible par défaut
     },
+    familyId: {  // Ajouter un champ pour identifier la famille
+        type: DataTypes.INTEGER,
+        allowNull: true, // ou false selon votre logique
+    },
 });
 
 // Relation entre Schedule et Nurse (1:N)

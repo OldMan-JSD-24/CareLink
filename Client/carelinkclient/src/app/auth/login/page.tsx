@@ -14,14 +14,35 @@ export default function LoginPage() {
   const router = useRouter(); // Utilisation de useRouter de next/navigation
   const [errorMessage, setErrorMessage] = useState("");
 
-  const onSubmit = (data: LoginFormInputs) => {
-    console.log(data);
-
-    // Simuler une redirection après connexion réussie
-    if (data.email === "test@example.com" && data.password === "password") {
-      router.push("/search"); // Redirige vers un tableau de bord fictif
-    } else {
-      setErrorMessage("Email ou mot de passe invalide.");
+  const onSubmit = async (data: LoginFormInputs) => {
+    try {
+      const response = await fetch('http://localhost:3000/users/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+  
+      if (!response.ok) {
+        const { message } = await response.json();
+        setErrorMessage(message || 'Une erreur est survenue.');
+        return;
+      }
+  
+      const { token, user } = await response.json();
+      console.log('Utilisateur connecté:', user);
+  
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', user.id); // Stocker le token pour l'authentification
+  
+      // Redirection en fonction du rôle
+      if (user.role === 'nurse') {
+        router.push('/profile'); // Page profil infirmière
+      } else if (user.role === 'family') {
+        router.push('/search'); // Page famille
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMessage('Erreur lors de la connexion.');
     }
   };
 

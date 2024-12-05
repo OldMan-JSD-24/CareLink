@@ -1,3 +1,4 @@
+const Reservation = require('../models/Reservation.model');
 const Schedule = require('../models/Schedule.model');
 
 // Ajouter des disponibilités
@@ -29,7 +30,7 @@ const addAvailability = async (req, res) => {
 const getSchedule = async (req, res) => {
   try {
     const { userId } = req.params;
-
+    console.log("j'intercepte")
     // Récupérer le planning
     const schedule = await Schedule.findAll({
       where: { userId },
@@ -42,15 +43,43 @@ const getSchedule = async (req, res) => {
   }
 };
 
+const getFamilyReservations = async (req, res) => {
+
+    console.log("Je suis inocent");
+    try {
+      const { familyId } = req.params;  // Utilisation de familyId passé dans les paramètres de la requête
+      console.log('params',req.params)
+      // Vérifier que familyId est fourni
+      if (!familyId) {
+        return res.status(400).json({ error: 'familyId est requis' });
+      }
+  
+      // Récupérer les réservations pour la famille
+      const reservations = await Schedule.findAll({
+        where: { familyId },
+        order: [['date', 'ASC'], ['startTime', 'ASC']],
+      });
+      console.log("reservation", reservations)
+      if (!reservations || reservations.length === 0) {
+        return res.status(404).json({ error: 'Aucune réservation trouvée pour cette famille' });
+      }
+      
+      console.log('zaaaaaaaaaaaaa',reservations)
+      res.status(200).json(reservations);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
 // Réserver un créneau
 
 const bookSchedule = async (req, res) => {
     try {
-        const { scheduleId } = req.body; // ID du créneau à réserver
-
+        const { scheduleId, familyid } = req.body; // ID du créneau à réserver
+        console.log("id fam : ", req.body);
         // Récupérer le créneau
         const schedule = await Schedule.findByPk(scheduleId);
-
+        schedule.familyId = familyid
         if (!schedule) {
             return res.status(404).json({ error: 'Schedule not found' });
         }
@@ -79,4 +108,4 @@ const bookSchedule = async (req, res) => {
 
 
 
-module.exports = { addAvailability, getSchedule, bookSchedule };
+module.exports = { getFamilyReservations, addAvailability, getSchedule, bookSchedule };

@@ -4,6 +4,9 @@ const sequelize = require('./config/db'); // Connexion à SQLite
 const profileRoutes = require('./routes/Profile.route');
 const nurseRoutes = require('./routes/Nurse.route');
 const scheduleRoutes = require('./routes/Schedule.route');
+const cors = require('cors');
+
+// Ajouter le middleware CORS
 
 
 
@@ -13,6 +16,11 @@ const reservationRoutes = require('./routes/Reservation.route');
 
 const app = express();
 
+app.use(cors({
+  origin: 'http://localhost:3001', // Adresse du frontend
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true, // Permettre les cookies
+}));
 // Middleware pour parser les requêtes JSON
 app.use(bodyParser.json());
 
