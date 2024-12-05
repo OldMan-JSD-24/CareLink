@@ -1,7 +1,7 @@
-require('dotenv').config(); // Charger les variables d'environnement
+require('dotenv').config({ path: './config/.env' }); // Charger les variables d'environnement
 const app = require('./app'); // Importer l'application configurée
 
-const PORT = process.env.PORT || 3000; // Port par défaut : 3000
+const PORT = process.env.PORT; // Port par défaut : 3000
 
 // Démarrage du serveur
 app.listen(PORT, () => {
