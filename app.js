@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const sequelize = require('./config/db'); // Connexion à SQLite
 const profileRoutes = require('./routes/Profile.route');
 const nurseRoutes = require('./routes/Nurse.route');
+const scheduleRoutes = require('./routes/Schedule.route');
+
 
 
 // Import des routes
@@ -24,5 +26,6 @@ app.use('/users', userRoutes);
 app.use('/reservations', reservationRoutes);
 app.use('/profiles', profileRoutes);
 app.use('/nurses', nurseRoutes);
+app.use('/schedule', scheduleRoutes);
 // Export de l'application configurée
 module.exports = app;
